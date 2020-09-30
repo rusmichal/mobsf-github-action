@@ -10,6 +10,9 @@ function run() {
 		const mobsfApiUrl = core.getInput('MOBSF_API_URL', { required: true });
 		const artifactPath = core.getInput('ARTIFACT_PATH', { required: true });
 
+		if (!fs.existsSync(artifactPath)) {
+			core.setFailed(`Cannot found artifact in path: ${artifactPath}`);
+		}
 		// Determine content-length for header to upload asset
 		const contentLength = fs.statSync(artifactPath).size;
 		const fileStream = fs.createReadStream(artifactPath);
@@ -25,7 +28,7 @@ function run() {
 		console.log(json)
 
 		if(json.code == 200) {
-			 core.info('Artifact ${json} has been successfully uploaded!')
+			 core.info(`Artifact ${json} has been successfully uploaded!`)
 		} else {
 			core.setFailed(error.message);
 		}
